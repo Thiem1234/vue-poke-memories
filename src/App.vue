@@ -1,26 +1,74 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js App" />
+  <app-main-screen
+    v-if="statusMatch === 'default'"
+    @onStart="onHandleBeforeStart($event)"
+  ></app-main-screen>
+  <interact-screen
+    @onFinish="onGetResult()"
+    v-if="statusMatch === 'match'"
+    :cardsContext="settings.cardsContext"
+  ></interact-screen>
+  <result-screen
+    @onStartAgain="statusMatch = 'default'"
+    :timer="timer"
+    v-if="statusMatch === 'result'"
+  ></result-screen>
+  <copy-right></copy-right>
 </template>
-
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
-
+import MainScreen from "./components/MainScreen.vue";
+import InteractScreen from "./components/InteractScreen.vue";
+import { shuffled } from "./utils/array.js";
+import ResultScreen from "./components/ResultScreen.vue";
+import CopyRight from "./components/CopyRight.vue";
 export default {
-  name: "App",
+  data: function () {
+    return {
+      statusMatch: "default",
+      timer: 0,
+      settings: {
+        totalOfBlocks: 0,
+        cardsContext: [],
+        startedAt: null,
+      },
+    };
+  },
   components: {
-    HelloWorld,
+    appMainScreen: MainScreen,
+    InteractScreen,
+    ResultScreen,
+    CopyRight,
+  },
+  methods: {
+    onHandleBeforeStart: function (config) {
+      this.statusMatch = "match";
+      this.settings.totalOfBlocks = config.totalOfBlocks;
+
+      const firstCards = Array.from(
+        { length: this.settings.totalOfBlocks / 2 },
+        (_, i) => i + 1
+      );
+      console.log(firstCards);
+      const secondCards = [...firstCards];
+      console.log(secondCards);
+      const cards = [...firstCards, ...secondCards];
+      console.log(cards);
+      this.settings.cardsContext = shuffled(
+        shuffled(shuffled(shuffled(cards)))
+      );
+      console.log(this.settings.cardsContext);
+      this.settings.startedAt = new Date().getTime();
+
+      // data ready
+      console.log("Running handle before start ", config);
+    },
+    onGetResult: function () {
+      // Get timer
+      this.timer = new Date().getTime() - this.settings.startedAt;
+      // switch to result component
+      this.statusMatch = "result";
+    },
   },
 };
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style></style>

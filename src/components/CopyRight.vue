@@ -1,0 +1,25 @@
+<template>
+  <div class="copyright">
+    <p>
+      This game owned by ThiemDZ in Vue3 course for beginners -
+      <a target="_blank" href="https://www.facebook.com/the.thiem.97"
+        >view here</a
+      >
+    </p>
+  </div>
+</template>
+
+<style lang="css" scoped>
+.copyright {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 1.5rem;
+  color: var(--light);
+  z-index: 3;
+  font-size: 1.5rem;
+}
+.copyright a {
+  color: #f4dc26;
+}
+</style>
